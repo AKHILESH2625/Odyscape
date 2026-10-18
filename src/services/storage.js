@@ -1,7 +1,4 @@
-/**
- * Odyscape Itinerary Persistence Service
- * Stores and manages user custom travel plans in browser localStorage.
- */
+import { INCREDIBLE_INDIA_PRESET } from './travelApi';
 
 const STORAGE_KEY = 'odyscape_itinerary_v1';
 
@@ -9,13 +6,22 @@ const STORAGE_KEY = 'odyscape_itinerary_v1';
 export function getSavedItinerary() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
+    if (!raw) {
+      // Seed with the rich Incredible India itinerary preset
+      saveItinerary(INCREDIBLE_INDIA_PRESET);
+      return INCREDIBLE_INDIA_PRESET;
+    }
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed : [];
   } catch (error) {
     console.error('Failed to parse itinerary from localStorage:', error);
-    return [];
+    return INCREDIBLE_INDIA_PRESET;
   }
+}
+
+export function loadIndiaPresetItinerary() {
+  saveItinerary(INCREDIBLE_INDIA_PRESET);
+  return INCREDIBLE_INDIA_PRESET;
 }
 
 export function saveItinerary(items) {

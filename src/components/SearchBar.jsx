@@ -77,7 +77,7 @@ export default function SearchBar({
       {/* Suggested Quick Searches */}
       <div className="flex flex-wrap items-center gap-2 mt-3 text-xs text-navy-700/70 px-2">
         <span className="font-medium text-navy-900">Try exploring:</span>
-        {['Kyoto', 'Santorini', 'Serengeti', 'Amalfi Coast', 'Banff', 'Bora Bora'].map((term) => (
+        {['India', 'Taj Mahal', 'Jaipur', 'Kerala', 'Ladakh', 'Kyoto', 'Santorini', 'Serengeti', 'Amalfi Coast'].map((term) => (
           <button
             key={term}
             onClick={() => setSearchQuery(term)}

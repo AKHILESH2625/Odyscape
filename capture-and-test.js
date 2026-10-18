@@ -74,19 +74,19 @@ async function run() {
     await new Promise(r => setTimeout(r, 400));
   }
 
-  // 3. Search & Filter State
-  console.log('📸 3. Capturing Search & Filter State...');
+  // 3. Search & Filter State (India)
+  console.log('📸 3. Capturing Search & Filter State for India...');
   const searchInput = await page.$('input[type="text"]');
   if (searchInput) {
-    await searchInput.type('Santorini');
+    await searchInput.type('India');
     await new Promise(r => setTimeout(r, 800));
     await page.screenshot({ path: path.join(SHOTS_DIR, '03_search_filter.png') });
     // Clear search
     await page.evaluate(el => el.value = '', searchInput);
   }
 
-  // 4. Populated Itinerary ("My Trip")
-  console.log('📸 4. Capturing Populated My Trip View...');
+  // 4. Populated Itinerary ("My Trip" with Incredible India Itinerary)
+  console.log('📸 4. Capturing Populated My Trip View (Incredible India Tour)...');
   const navBtns = await page.$$('header nav button');
   for (const btn of navBtns) {
     const text = await page.evaluate(el => el.textContent, btn);
@@ -96,6 +96,12 @@ async function run() {
     }
   }
   await new Promise(r => setTimeout(r, 1000));
+  // Ensure Incredible India Tour is loaded
+  await page.evaluate(() => {
+    const btn = Array.from(document.querySelectorAll('button')).find(b => b.textContent && b.textContent.includes('Incredible India Tour'));
+    if (btn) btn.click();
+  });
+  await new Promise(r => setTimeout(r, 800));
   await page.screenshot({ path: path.join(SHOTS_DIR, '04_populated_itinerary.png') });
 
   // 5. Empty Itinerary State

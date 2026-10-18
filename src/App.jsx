@@ -15,7 +15,8 @@ import {
   addToItinerary, 
   removeFromItinerary, 
   updateItineraryItem, 
-  clearAllItinerary 
+  clearAllItinerary,
+  loadIndiaPresetItinerary 
 } from './services/storage';
 
 export default function App() {
@@ -110,6 +111,12 @@ export default function App() {
     setItinerary(updated);
   }, []);
 
+  // 6b. Load Incredible India Itinerary Preset
+  const handleLoadIndiaItinerary = useCallback(() => {
+    const updated = loadIndiaPresetItinerary();
+    setItinerary(updated);
+  }, []);
+
   // 7. Global Wikipedia Deep Search
   const handleSearchGlobal = useCallback(async (query) => {
     if (!query || query.trim().length < 2) return;
@@ -182,6 +189,7 @@ export default function App() {
             onRemoveItem={handleRemoveFromTrip}
             onUpdateItem={handleUpdateItem}
             onClearAll={handleClearAll}
+            onLoadIndiaItinerary={handleLoadIndiaItinerary}
             onNavigateExplore={() => setActiveTab('explore')}
             onSelectDestination={(dest) => {
               // Could open modal or inspect
