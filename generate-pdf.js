@@ -151,7 +151,7 @@ const htmlContent = `
       </div>
       <div class="meta-item">
         <strong>Repository</strong>
-        github.com/akhilesh012008/odyscape
+        github.com/AKHILESH2625/Odyscape
       </div>
     </div>
   </div>

@@ -5,7 +5,8 @@
 > **Selected Track:** Track 1: Frontend Development  
 > **Candidate:** S Akhilesh  
 > **Registration Number:** `25BCE5345`  
-> **Repository:** [https://github.com/akhilesh012008/odyscape](https://github.com/akhilesh012008/odyscape)
+> **Repository:** [https://github.com/AKHILESH2625/Odyscape](https://github.com/AKHILESH2625/Odyscape)  
+> **Live GitHub Pages URL:** [https://akhilesh2625.github.io/Odyscape/](https://akhilesh2625.github.io/Odyscape/)
 
 ---
 
@@ -166,8 +167,8 @@ Follow these steps to run Odyscape on your local machine:
 ### Steps
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/akhilesh012008/odyscape.git
-   cd odyscape
+   git clone https://github.com/AKHILESH2625/Odyscape.git
+   cd Odyscape
    ```
 
 2. **Install dependencies:**
@@ -201,11 +202,19 @@ Follow these steps to run Odyscape on your local machine:
 
 ---
 
+## 🌐 Live Deployments (Option A & Option B)
+
+- **Option A (GitHub Pages):** [https://akhilesh2625.github.io/Odyscape/](https://akhilesh2625.github.io/Odyscape/)  
+  Automated via `.github/workflows/deploy.yml` on every push to `main`.
+- **Option B (Vercel):** One-click continuous deployment configured via `vercel.json`. Import `AKHILESH2625/Odyscape` on [Vercel](https://vercel.com/new).
+
+---
+
 ## 📄 Submission Artifacts
 
-- **Source Code Repository:** Public GitHub repository at [https://github.com/akhilesh012008/odyscape](https://github.com/akhilesh012008/odyscape)
+- **Source Code Repository:** Public GitHub repository at [https://github.com/AKHILESH2625/Odyscape](https://github.com/AKHILESH2625/Odyscape)
+- **Live Deployment URL:** [https://akhilesh2625.github.io/Odyscape/](https://akhilesh2625.github.io/Odyscape/)
 - **Submission Screenshot PDF:** `25BCE5345_frontend.pdf` (compliant with `<register no>_<Track>` specification)
-- **Live Deployment:** Ready for instant preview and deployment on Vercel / Netlify.
 
 ---
 
