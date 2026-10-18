@@ -5,6 +5,7 @@ import Explore from './components/Explore';
 import MyTrip from './components/MyTrip';
 import Footer from './components/Footer';
 import AboutModal from './components/AboutModal';
+import DestinationModal from './components/DestinationModal';
 import { 
   loadEnrichedDestinations, 
   searchWorldDestinations,
@@ -16,7 +17,9 @@ import {
   removeFromItinerary, 
   updateItineraryItem, 
   clearAllItinerary,
-  loadIndiaPresetItinerary 
+  loadIndiaPresetItinerary,
+  loadMalaysiaPresetItinerary,
+  loadAsiaPresetItinerary
 } from './services/storage';
 
 export default function App() {
@@ -28,6 +31,7 @@ export default function App() {
   const [isSearchingApi, setIsSearchingApi] = useState(false);
   const [hasLiveApiResults, setHasLiveApiResults] = useState(false);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
+  const [modalDestination, setModalDestination] = useState(null);
 
   // 1. Initial Load: Itinerary from LocalStorage + Destinations from Real External APIs
   useEffect(() => {
@@ -97,7 +101,10 @@ export default function App() {
   const handleRemoveFromTrip = useCallback((destinationId) => {
     const updated = removeFromItinerary(destinationId);
     setItinerary(updated);
-  }, []);
+    if (modalDestination && modalDestination.id === destinationId) {
+      setModalDestination(null);
+    }
+  }, [modalDestination]);
 
   // 5. Update Item in Itinerary (Days / Notes / Date)
   const handleUpdateItem = useCallback((destinationId, updates) => {
@@ -111,9 +118,19 @@ export default function App() {
     setItinerary(updated);
   }, []);
 
-  // 6b. Load Incredible India Itinerary Preset
+  // 6b. Presets
   const handleLoadIndiaItinerary = useCallback(() => {
     const updated = loadIndiaPresetItinerary();
+    setItinerary(updated);
+  }, []);
+
+  const handleLoadMalaysiaItinerary = useCallback(() => {
+    const updated = loadMalaysiaPresetItinerary();
+    setItinerary(updated);
+  }, []);
+
+  const handleLoadAsiaItinerary = useCallback(() => {
+    const updated = loadAsiaPresetItinerary();
     setItinerary(updated);
   }, []);
 
@@ -146,6 +163,9 @@ export default function App() {
       el.scrollIntoView({ behavior: 'smooth' });
     }
   };
+
+  const isModalDestSaved = modalDestination ? itinerary.some(item => item.id === modalDestination.id) : false;
+  const modalSavedDetails = modalDestination ? itinerary.find(item => item.id === modalDestination.id) : null;
 
   return (
     <div className="min-h-screen flex flex-col bg-ivory-50 text-navy-950 font-sans selection:bg-gold-500 selection:text-white">
@@ -190,13 +210,27 @@ export default function App() {
             onUpdateItem={handleUpdateItem}
             onClearAll={handleClearAll}
             onLoadIndiaItinerary={handleLoadIndiaItinerary}
+            onLoadMalaysiaItinerary={handleLoadMalaysiaItinerary}
+            onLoadAsiaItinerary={handleLoadAsiaItinerary}
             onNavigateExplore={() => setActiveTab('explore')}
             onSelectDestination={(dest) => {
-              // Could open modal or inspect
+              setModalDestination(dest);
             }}
           />
         )}
       </main>
+
+      {/* Modal opened from Itinerary view */}
+      {modalDestination && (
+        <DestinationModal
+          destination={modalDestination}
+          isSaved={isModalDestSaved}
+          savedDetails={modalSavedDetails}
+          onClose={() => setModalDestination(null)}
+          onSaveToTrip={handleSaveToTrip}
+          onRemoveFromTrip={handleRemoveFromTrip}
+        />
+      )}
 
       {/* Footer */}
       <Footer onOpenAbout={() => setIsAboutOpen(true)} />

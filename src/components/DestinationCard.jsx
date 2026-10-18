@@ -97,14 +97,34 @@ export default function DestinationCard({
       {/* Card Body */}
       <div className="flex-1 p-5 flex flex-col justify-between">
         <div>
+          {/* Exact Location Sub-label */}
+          {destination.exactLocation && (
+            <div className="flex items-center gap-1.5 text-[11px] text-navy-600 font-medium mb-2">
+              <MapPin className="w-3 h-3 text-gold-600 flex-shrink-0" />
+              <span className="truncate" title={destination.exactLocation}>{destination.exactLocation}</span>
+            </div>
+          )}
+
           {/* Subtitle / Description Excerpt */}
-          <p className="text-xs sm:text-sm text-navy-800/80 line-clamp-2 leading-relaxed mb-4">
+          <p className="text-xs sm:text-sm text-navy-800/80 line-clamp-2 leading-relaxed mb-3">
             {destination.description || destination.subtitle}
           </p>
 
-          {/* Highlights / Tags */}
-          {destination.highlights && destination.highlights.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 mb-5">
+          {/* Key Tourist Attractions / Highlights */}
+          {destination.touristPlaces && destination.touristPlaces.length > 0 ? (
+            <div className="flex flex-wrap gap-1.5 mb-4">
+              {destination.touristPlaces.slice(0, 2).map((place, idx) => (
+                <span 
+                  key={idx} 
+                  className="px-2 py-0.5 rounded-md bg-gold-500/10 text-gold-950 text-[11px] font-medium border border-gold-500/20 truncate max-w-[240px]"
+                  title={typeof place === 'string' ? place : place.name}
+                >
+                  📍 {typeof place === 'string' ? place.split('(')[0].trim() : place.name}
+                </span>
+              ))}
+            </div>
+          ) : destination.highlights && destination.highlights.length > 0 ? (
+            <div className="flex flex-wrap gap-1.5 mb-4">
               {destination.highlights.slice(0, 3).map((item, idx) => (
                 <span 
                   key={idx} 
@@ -114,7 +134,7 @@ export default function DestinationCard({
                 </span>
               ))}
             </div>
-          )}
+          ) : null}
         </div>
 
         {/* Card Footer: Budget + Action Buttons */}

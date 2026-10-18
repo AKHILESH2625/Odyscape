@@ -41,7 +41,10 @@ export default function Explore({
         item.name.toLowerCase().includes(q) ||
         item.country.toLowerCase().includes(q) ||
         item.category.toLowerCase().includes(q) ||
+        (item.exactLocation && item.exactLocation.toLowerCase().includes(q)) ||
         (item.tags && item.tags.some(t => t.toLowerCase().includes(q))) ||
+        (item.touristPlaces && item.touristPlaces.some(p => (typeof p === 'string' ? p : p.name).toLowerCase().includes(q))) ||
+        (item.highlights && item.highlights.some(h => h.toLowerCase().includes(q))) ||
         (item.description && item.description.toLowerCase().includes(q))
       );
     }

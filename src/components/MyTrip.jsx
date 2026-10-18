@@ -14,7 +14,10 @@ import {
   Sparkles, 
   FileText,
   Check,
-  AlertCircle
+  AlertCircle,
+  Landmark,
+  Globe2,
+  ChevronRight
 } from 'lucide-react';
 import { calculateTripSummary, updateItineraryItem } from '../services/storage';
 
@@ -25,7 +28,9 @@ export default function MyTrip({
   onClearAll,
   onNavigateExplore,
   onSelectDestination,
-  onLoadIndiaItinerary
+  onLoadIndiaItinerary,
+  onLoadMalaysiaItinerary,
+  onLoadAsiaItinerary
 }) {
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [saveToast, setSaveToast] = useState('');
@@ -40,7 +45,7 @@ export default function MyTrip({
 
   const handleNotesChange = (item, newNotes) => {
     onUpdateItem(item.id, { notes: newNotes });
-    setSaveToast('Notes saved');
+    setSaveToast('Notes updated');
     setTimeout(() => setSaveToast(''), 1500);
   };
 
@@ -73,19 +78,28 @@ export default function MyTrip({
           Your Itinerary is a Blank Canvas
         </h2>
         <p className="max-w-md mx-auto text-sm sm:text-base text-navy-800/70 mb-8 leading-relaxed">
-          No destinations saved yet. You can immediately load the pre-curated Incredible India Voyage or browse destinations from across the world.
+          No destinations saved yet. Load a pre-curated voyage or browse our world catalog of destinations with real tourist places and live weather.
         </p>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+        <div className="flex flex-wrap items-center justify-center gap-3">
           <button
             onClick={onLoadIndiaItinerary}
-            className="w-full sm:w-auto px-6 py-3.5 rounded-full text-xs font-semibold uppercase tracking-widest bg-gradient-to-r from-gold-500 to-amber-500 text-navy-950 hover:from-gold-400 hover:to-amber-400 shadow-luxury transition-all transform hover:-translate-y-0.5 inline-flex items-center justify-center gap-2"
+            className="px-5 py-3 rounded-full text-xs font-semibold uppercase tracking-widest bg-gradient-to-r from-gold-500 to-amber-500 text-navy-950 hover:from-gold-400 hover:to-amber-400 shadow-luxury transition-all transform hover:-translate-y-0.5 inline-flex items-center gap-2"
           >
             <Sparkles className="w-4 h-4" />
-            <span>Load Incredible India Itinerary (6 Places &bull; 19 Days)</span>
+            <span>Load Incredible India (8 Destinations)</span>
           </button>
+          {onLoadMalaysiaItinerary && (
+            <button
+              onClick={onLoadMalaysiaItinerary}
+              className="px-5 py-3 rounded-full text-xs font-semibold uppercase tracking-widest bg-emerald-800 text-emerald-100 hover:bg-emerald-700 shadow-luxury transition-all transform hover:-translate-y-0.5 inline-flex items-center gap-2"
+            >
+              <Globe2 className="w-4 h-4 text-emerald-300" />
+              <span>Load Malaysia Wonders (4 Destinations)</span>
+            </button>
+          )}
           <button
             onClick={onNavigateExplore}
-            className="w-full sm:w-auto px-6 py-3.5 rounded-full text-xs font-semibold uppercase tracking-widest bg-navy-900 text-gold-400 hover:bg-navy-800 shadow-luxury transition-all transform hover:-translate-y-0.5 inline-flex items-center justify-center gap-2"
+            className="px-5 py-3 rounded-full text-xs font-semibold uppercase tracking-widest bg-navy-900 text-gold-400 hover:bg-navy-800 shadow-luxury transition-all transform hover:-translate-y-0.5 inline-flex items-center gap-2"
           >
             <Compass className="w-4 h-4" />
             <span>Explore Destinations</span>
@@ -109,46 +123,69 @@ export default function MyTrip({
             My Trip Itinerary
           </h2>
           <p className="text-xs sm:text-sm text-navy-700/70 mt-1">
-            Persisted in browser storage &bull; {itinerary.length} destinations scheduled
+            Persisted in browser storage &bull; {itinerary.length} destinations scheduled with tourist spots & coordinates
           </p>
         </div>
 
         {/* Global Itinerary Actions */}
         <div className="flex flex-wrap items-center gap-2.5 no-print">
+          {/* Preset switchers */}
           <button
             onClick={onLoadIndiaItinerary}
-            title="Load curated Incredible India Grand Tour"
-            className="px-3.5 py-2 rounded-xl bg-gold-500/10 border border-gold-500/40 text-gold-900 hover:bg-gold-500/20 text-xs font-semibold transition flex items-center gap-1.5 shadow-sm"
+            title="Load curated 8-destination Incredible India Tour"
+            className="px-3 py-1.5 rounded-xl bg-gold-500/10 border border-gold-500/40 text-gold-950 hover:bg-gold-500/20 text-xs font-semibold transition flex items-center gap-1.5 shadow-sm"
           >
-            <Sparkles className="w-3.5 h-3.5 text-gold-600" />
-            <span>Incredible India Tour</span>
+            <span>🇮🇳</span>
+            <span>India Tour</span>
           </button>
+
+          {onLoadMalaysiaItinerary && (
+            <button
+              onClick={onLoadMalaysiaItinerary}
+              title="Load curated 4-destination Malaysia Wonders Tour"
+              className="px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-900 hover:bg-emerald-100 text-xs font-semibold transition flex items-center gap-1.5 shadow-sm"
+            >
+              <span>🇲🇾</span>
+              <span>Malaysia Tour</span>
+            </button>
+          )}
+
+          {onLoadAsiaItinerary && (
+            <button
+              onClick={onLoadAsiaItinerary}
+              title="Load Grand Asia Combined Tour"
+              className="px-3 py-1.5 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-900 hover:bg-indigo-100 text-xs font-semibold transition flex items-center gap-1.5 shadow-sm"
+            >
+              <Globe2 className="w-3.5 h-3.5 text-indigo-600" />
+              <span>Grand Asia</span>
+            </button>
+          )}
 
           <button
             onClick={handlePrint}
             title="Print or export to PDF via browser print"
-            className="px-3.5 py-2 rounded-xl bg-white border border-ivory-200 hover:border-gold-500 text-navy-900 text-xs font-semibold transition flex items-center gap-1.5 shadow-sm"
+            className="px-3 py-1.5 rounded-xl bg-white border border-ivory-200 hover:border-gold-500 text-navy-900 text-xs font-semibold transition flex items-center gap-1.5 shadow-sm"
           >
             <Printer className="w-3.5 h-3.5 text-gold-600" />
-            <span>Print / PDF</span>
+            <span>Print</span>
           </button>
 
           <button
             onClick={handleExportJson}
             title="Export itinerary as structured JSON file"
-            className="px-3.5 py-2 rounded-xl bg-white border border-ivory-200 hover:border-gold-500 text-navy-900 text-xs font-semibold transition flex items-center gap-1.5 shadow-sm"
+            className="px-3 py-1.5 rounded-xl bg-white border border-ivory-200 hover:border-gold-500 text-navy-900 text-xs font-semibold transition flex items-center gap-1.5 shadow-sm"
           >
             <Download className="w-3.5 h-3.5 text-gold-600" />
-            <span>Export JSON</span>
+            <span>Export</span>
           </button>
 
           <button
             onClick={() => setShowClearConfirm(true)}
             title="Reset and clear all saved destinations"
-            className="px-3 py-2 rounded-xl text-xs font-semibold text-rose-600 hover:bg-rose-50 border border-rose-200 transition flex items-center gap-1"
+            className="px-3 py-1.5 rounded-xl text-xs font-semibold text-rose-600 hover:bg-rose-50 border border-rose-200 transition flex items-center gap-1"
           >
             <Trash2 className="w-3.5 h-3.5" />
-            <span>Clear Trip</span>
+            <span>Clear</span>
           </button>
         </div>
       </div>
@@ -217,121 +254,172 @@ export default function MyTrip({
       </div>
 
       {/* Itinerary List */}
-      <div className="space-y-4">
+      <div className="space-y-6">
         {itinerary.map((item, index) => {
           const itemTotalCost = (Number(item.plannedDays) || 3) * (item.budgetPerDay || 150);
+          const touristSpots = item.touristPlaces && item.touristPlaces.length > 0 
+            ? item.touristPlaces 
+            : (item.highlights || []);
 
           return (
             <div
               key={item.id}
-              className="bg-white rounded-2xl border border-ivory-200 hover:border-gold-400/50 shadow-luxury transition-all p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-6"
+              className="bg-white rounded-2xl border border-ivory-200 hover:border-gold-400/60 shadow-luxury transition-all p-5 sm:p-6 space-y-4"
             >
-              {/* Left Column: Image + Title + Region */}
-              <div className="flex items-center gap-4 w-full md:w-auto cursor-pointer" onClick={() => onSelectDestination(item)}>
-                <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden bg-navy-900 flex-shrink-0">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.target.src = item.fallbackImage || 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=400&q=80';
-                    }}
-                  />
-                  <div className="absolute top-1 left-1 w-5 h-5 rounded-full bg-navy-950/80 text-gold-300 text-[10px] font-bold flex items-center justify-center">
-                    {index + 1}
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex items-center gap-1.5 text-xs text-gold-600 font-semibold uppercase tracking-wider">
-                    <MapPin className="w-3.5 h-3.5" />
-                    <span>{item.country}</span>
-                    <span className="text-navy-300">&bull;</span>
-                    <span className="text-navy-700/60 font-normal">{item.category}</span>
-                  </div>
-                  <h3 className="font-serif text-xl sm:text-2xl font-bold text-navy-950 hover:text-gold-600 transition">
-                    {item.name}
-                  </h3>
-                  {item.weather && (
-                    <span className="text-[11px] text-navy-700/70 inline-flex items-center gap-1">
-                      <span>Live: {item.weather.temp}°C, {item.weather.condition}</span>
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              {/* Middle Column: Date & Days Customizer */}
-              <div className="flex flex-wrap items-center gap-4 w-full md:w-auto">
-                {/* Date Picker */}
-                <div>
-                  <label className="block text-[10px] font-semibold uppercase tracking-wider text-navy-700/70 mb-1">
-                    Visit Date
-                  </label>
-                  <input
-                    type="date"
-                    value={item.visitDate || ''}
-                    onChange={(e) => handleDateChange(item, e.target.value)}
-                    className="px-2.5 py-1.5 rounded-lg bg-ivory-50 border border-ivory-200 text-xs font-medium text-navy-900 focus:outline-none focus:ring-1 focus:ring-gold-500"
-                  />
-                </div>
-
-                {/* Duration Stepper */}
-                <div>
-                  <label className="block text-[10px] font-semibold uppercase tracking-wider text-navy-700/70 mb-1">
-                    Stay Duration
-                  </label>
-                  <div className="inline-flex items-center rounded-lg border border-ivory-200 bg-ivory-50 p-0.5">
-                    <button
-                      onClick={() => handleDaysChange(item, -1)}
-                      className="p-1 rounded hover:bg-white text-navy-800 transition"
-                      aria-label="Decrease stay days"
-                    >
-                      <Minus className="w-3.5 h-3.5" />
-                    </button>
-                    <span className="px-3 text-xs font-bold text-navy-950">
-                      {item.plannedDays || 3}d
-                    </span>
-                    <button
-                      onClick={() => handleDaysChange(item, 1)}
-                      className="p-1 rounded hover:bg-white text-navy-800 transition"
-                      aria-label="Increase stay days"
-                    >
-                      <Plus className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                </div>
-
-                {/* Subtotal Cost */}
-                <div className="hidden sm:block">
-                  <span className="block text-[10px] font-semibold uppercase tracking-wider text-navy-700/70 mb-1">
-                    Est. Subtotal
-                  </span>
-                  <span className="text-xs font-bold text-navy-950">
-                    ${itemTotalCost}
-                  </span>
-                </div>
-              </div>
-
-              {/* Right Column: Travel Notes & Remove Button */}
-              <div className="flex items-center gap-3 w-full md:w-64">
-                <div className="flex-1">
-                  <textarea
-                    rows="1"
-                    defaultValue={item.notes || ''}
-                    onBlur={(e) => handleNotesChange(item, e.target.value)}
-                    placeholder="Add personal notes..."
-                    className="w-full text-xs p-2 rounded-lg bg-ivory-50 border border-ivory-200 text-navy-900 focus:outline-none focus:ring-1 focus:ring-gold-500 resize-none"
-                  />
-                </div>
-
-                <button
-                  onClick={() => onRemoveItem(item.id)}
-                  title="Remove from itinerary"
-                  className="p-2 rounded-xl text-navy-400 hover:text-rose-600 hover:bg-rose-50 transition"
+              {/* Row 1: Destination Header, Timing, Subtotal, Notes & Delete */}
+              <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+                
+                {/* Left Column: Image + Title + Category + Live Weather */}
+                <div 
+                  className="flex items-center gap-4 w-full lg:w-auto cursor-pointer group" 
+                  onClick={() => onSelectDestination(item)}
                 >
-                  <Trash2 className="w-4 h-4" />
-                </button>
+                  <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden bg-navy-900 flex-shrink-0 shadow-sm">
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      onError={(e) => {
+                        e.target.src = item.fallbackImage || 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=400&q=80';
+                      }}
+                    />
+                    <div className="absolute top-1 left-1 w-5 h-5 rounded-full bg-navy-950/90 text-gold-300 text-[10px] font-bold flex items-center justify-center">
+                      {index + 1}
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="flex items-center gap-1.5 text-xs text-gold-600 font-semibold uppercase tracking-wider">
+                      <span>{item.country}</span>
+                      <span className="text-navy-300">&bull;</span>
+                      <span className="text-navy-700/60 font-normal">{item.category}</span>
+                    </div>
+
+                    <h3 className="font-serif text-xl sm:text-2xl font-bold text-navy-950 group-hover:text-gold-600 transition flex items-center gap-1.5">
+                      <span>{item.name}</span>
+                      <ChevronRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition text-gold-600" />
+                    </h3>
+
+                    {item.weather && (
+                      <span className="text-[11px] text-navy-700/70 inline-flex items-center gap-1 mt-0.5">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />
+                        <span>Live Weather: {item.weather.temp}°C, {item.weather.condition}</span>
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Middle Column: Date Picker & Duration Stepper */}
+                <div className="flex flex-wrap items-center gap-4 w-full lg:w-auto">
+                  {/* Date Picker */}
+                  <div>
+                    <label className="block text-[10px] font-semibold uppercase tracking-wider text-navy-700/70 mb-1">
+                      Visit Date
+                    </label>
+                    <input
+                      type="date"
+                      value={item.visitDate || ''}
+                      onChange={(e) => handleDateChange(item, e.target.value)}
+                      className="px-2.5 py-1.5 rounded-lg bg-ivory-50 border border-ivory-200 text-xs font-medium text-navy-900 focus:outline-none focus:ring-1 focus:ring-gold-500"
+                    />
+                  </div>
+
+                  {/* Duration Stepper */}
+                  <div>
+                    <label className="block text-[10px] font-semibold uppercase tracking-wider text-navy-700/70 mb-1">
+                      Stay Duration
+                    </label>
+                    <div className="inline-flex items-center rounded-lg border border-ivory-200 bg-ivory-50 p-0.5">
+                      <button
+                        onClick={() => handleDaysChange(item, -1)}
+                        className="p-1 rounded hover:bg-white text-navy-800 transition"
+                        aria-label="Decrease stay days"
+                      >
+                        <Minus className="w-3.5 h-3.5" />
+                      </button>
+                      <span className="px-3 text-xs font-bold text-navy-950">
+                        {item.plannedDays || 3}d
+                      </span>
+                      <button
+                        onClick={() => handleDaysChange(item, 1)}
+                        className="p-1 rounded hover:bg-white text-navy-800 transition"
+                        aria-label="Increase stay days"
+                      >
+                        <Plus className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Subtotal Cost */}
+                  <div>
+                    <span className="block text-[10px] font-semibold uppercase tracking-wider text-navy-700/70 mb-1">
+                      Est. Subtotal
+                    </span>
+                    <span className="text-xs font-bold text-navy-950">
+                      ${itemTotalCost} <span className="font-normal text-[10px] text-navy-500">(${item.budgetPerDay}/d)</span>
+                    </span>
+                  </div>
+                </div>
+
+                {/* Right Column: Travel Notes & Remove Button */}
+                <div className="flex items-center gap-3 w-full lg:w-72">
+                  <div className="flex-1">
+                    <textarea
+                      rows="2"
+                      defaultValue={item.notes || ''}
+                      onBlur={(e) => handleNotesChange(item, e.target.value)}
+                      placeholder="Add personal travel notes..."
+                      className="w-full text-xs p-2 rounded-lg bg-ivory-50 border border-ivory-200 text-navy-900 focus:outline-none focus:ring-1 focus:ring-gold-500 resize-none leading-relaxed"
+                    />
+                  </div>
+
+                  <button
+                    onClick={() => onRemoveItem(item.id)}
+                    title="Remove from itinerary"
+                    className="p-2.5 rounded-xl text-navy-400 hover:text-rose-600 hover:bg-rose-50 transition flex-shrink-0"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+
               </div>
+
+              {/* Row 2: Location Information */}
+              <div className="p-2.5 px-3.5 rounded-xl bg-ivory-50/80 border border-ivory-200/60 flex items-start sm:items-center gap-2 text-xs">
+                <MapPin className="w-4 h-4 text-gold-600 flex-shrink-0 mt-0.5 sm:mt-0" />
+                <span className="font-bold text-navy-900 uppercase tracking-wider text-[10px]">Exact Location:</span>
+                <span className="text-navy-800 font-medium">
+                  {item.exactLocation || `${item.name}, ${item.country}`}
+                </span>
+                {item.lat && item.lon && (
+                  <span className="hidden md:inline text-[11px] text-navy-500 ml-auto">
+                    GPS: [{item.lat.toFixed(3)}, {item.lon.toFixed(3)}]
+                  </span>
+                )}
+              </div>
+
+              {/* Row 3: Main Tourist Places & Attractions */}
+              {touristSpots && touristSpots.length > 0 && (
+                <div className="pt-2 border-t border-ivory-100">
+                  <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-navy-900 mb-2.5">
+                    <Landmark className="w-3.5 h-3.5 text-gold-600" />
+                    <span>Main Tourist Places & Key Attractions:</span>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                    {touristSpots.map((spot, sIdx) => (
+                      <div 
+                        key={sIdx} 
+                        className="flex items-start gap-2 p-2 rounded-lg bg-white border border-ivory-200 text-xs text-navy-900 shadow-2xs hover:border-gold-400/50 transition"
+                      >
+                        <span className="w-1.5 h-1.5 rounded-full bg-gold-500 mt-1.5 flex-shrink-0" />
+                        <span className="leading-snug font-medium">
+                          {typeof spot === 'string' ? spot : spot.name}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
             </div>
           );

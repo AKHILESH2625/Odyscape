@@ -1,4 +1,4 @@
-import { INCREDIBLE_INDIA_PRESET } from './travelApi';
+import { INCREDIBLE_INDIA_PRESET, MALAYSIA_WONDERS_PRESET, GRAND_ASIA_PRESET } from './travelApi';
 
 const STORAGE_KEY = 'odyscape_itinerary_v1';
 
@@ -24,6 +24,16 @@ export function loadIndiaPresetItinerary() {
   return INCREDIBLE_INDIA_PRESET;
 }
 
+export function loadMalaysiaPresetItinerary() {
+  saveItinerary(MALAYSIA_WONDERS_PRESET);
+  return MALAYSIA_WONDERS_PRESET;
+}
+
+export function loadAsiaPresetItinerary() {
+  saveItinerary(GRAND_ASIA_PRESET);
+  return GRAND_ASIA_PRESET;
+}
+
 export function saveItinerary(items) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
@@ -44,7 +54,13 @@ export function addToItinerary(destination, customDetails = {}) {
     // If already in, we update any notes or dates
     const updated = existing.map(item => 
       item.id === destination.id 
-        ? { ...item, ...customDetails, addedAt: item.addedAt || new Date().toISOString() } 
+        ? { 
+            ...item, 
+            ...customDetails, 
+            exactLocation: destination.exactLocation || item.exactLocation,
+            touristPlaces: destination.touristPlaces || item.touristPlaces,
+            addedAt: item.addedAt || new Date().toISOString() 
+          } 
         : item
     );
     saveItinerary(updated);
@@ -53,7 +69,9 @@ export function addToItinerary(destination, customDetails = {}) {
 
   const newItem = {
     ...destination,
-    notes: customDetails.notes || 'Explore landmarks, local culture, and authentic cuisine.',
+    exactLocation: destination.exactLocation || `${destination.name}, ${destination.country}`,
+    touristPlaces: destination.touristPlaces || destination.highlights || [],
+    notes: customDetails.notes || 'Explore key tourist landmarks, local culture, and authentic cuisine.',
     visitDate: customDetails.visitDate || '',
     plannedDays: Number(customDetails.plannedDays) || 3,
     addedAt: new Date().toISOString()

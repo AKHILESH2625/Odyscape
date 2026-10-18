@@ -14,7 +14,8 @@ import {
   Sparkles, 
   Compass, 
   Check,
-  Tag
+  Tag,
+  Landmark
 } from 'lucide-react';
 
 export default function DestinationModal({
@@ -102,8 +103,11 @@ export default function DestinationModal({
               {destination.name}
             </h2>
             <p className="flex items-center gap-1.5 text-gold-300 text-sm sm:text-base mt-1">
-              <MapPin className="w-4 h-4" />
-              <span>{destination.country} &bull; Coordinates: [{destination.lat?.toFixed(2)}, {destination.lon?.toFixed(2)}]</span>
+              <MapPin className="w-4 h-4 text-gold-400 flex-shrink-0" />
+              <span>{destination.exactLocation || `${destination.name}, ${destination.country}`}</span>
+              {destination.lat && destination.lon && (
+                <span className="text-white/60 text-xs hidden sm:inline">&bull; [{destination.lat.toFixed(2)}, {destination.lon.toFixed(2)}]</span>
+              )}
             </p>
           </div>
         </div>
@@ -167,7 +171,7 @@ export default function DestinationModal({
             </p>
           </div>
 
-          {/* Quick Travel Intel Grid */}
+          {/* Location & Sights Intel Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="p-4 rounded-xl bg-ivory-100 border border-ivory-200">
               <div className="flex items-center gap-2 text-gold-600 text-xs font-bold uppercase tracking-wider mb-1">
@@ -200,17 +204,35 @@ export default function DestinationModal({
             </div>
           </div>
 
-          {/* Top Landmarks & Highlights */}
+          {/* Main Tourist Places & Landmarks */}
+          {destination.touristPlaces && destination.touristPlaces.length > 0 && (
+            <div>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-navy-900 mb-3 flex items-center gap-1.5">
+                <Landmark className="w-4 h-4 text-gold-600" />
+                <span>Main Tourist Places & Must-Visit Sights</span>
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                {destination.touristPlaces.map((place, idx) => (
+                  <div key={idx} className="flex items-start gap-2.5 p-3 rounded-xl bg-ivory-50 border border-ivory-200 text-xs font-medium text-navy-900 shadow-2xs">
+                    <span className="w-2 h-2 rounded-full bg-gold-500 mt-1 flex-shrink-0" />
+                    <span className="leading-snug">{typeof place === 'string' ? place : place.name}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Signature Experiences & Highlights */}
           {destination.highlights && destination.highlights.length > 0 && (
             <div>
               <h4 className="text-xs font-bold uppercase tracking-wider text-navy-900 mb-3 flex items-center gap-1.5">
                 <Tag className="w-3.5 h-3.5 text-gold-600" />
-                <span>Signature Experiences & Landmarks</span>
+                <span>Key Highlights & Experiences</span>
               </h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {destination.highlights.map((h, i) => (
                   <div key={i} className="flex items-center gap-2.5 p-2.5 rounded-lg bg-white border border-ivory-200 text-xs font-medium text-navy-900">
-                    <span className="w-1.5 h-1.5 rounded-full bg-gold-500" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-gold-500 flex-shrink-0" />
                     <span>{h}</span>
                   </div>
                 ))}
@@ -236,68 +258,67 @@ export default function DestinationModal({
             <form onSubmit={handleSave} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-navy-900 mb-1.5">
-                    Planned Visit Date
+                  <label className="block text-xs font-bold uppercase tracking-wider text-navy-800 mb-1">
+                    Planned Days to Stay
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="60"
+                    value={plannedDays}
+                    onChange={(e) => setPlannedDays(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl bg-white border border-ivory-200 text-navy-900 text-sm focus:outline-none focus:ring-2 focus:ring-gold-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-navy-800 mb-1">
+                    Target Visit Date
                   </label>
                   <input
                     type="date"
                     value={visitDate}
                     onChange={(e) => setVisitDate(e.target.value)}
-                    className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-white border border-ivory-200 text-navy-900 focus:outline-none focus:ring-1 focus:ring-gold-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-navy-900 mb-1.5">
-                    Duration (Days) &bull; Est: ${(Number(plannedDays) || 3) * (destination.budgetPerDay || 150)}
-                  </label>
-                  <input
-                    type="number"
-                    min="1"
-                    max="30"
-                    value={plannedDays}
-                    onChange={(e) => setPlannedDays(e.target.value)}
-                    className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-white border border-ivory-200 text-navy-900 focus:outline-none focus:ring-1 focus:ring-gold-500"
+                    className="w-full px-3 py-2 rounded-xl bg-white border border-ivory-200 text-navy-900 text-sm focus:outline-none focus:ring-2 focus:ring-gold-500"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-navy-900 mb-1.5">
-                  Travel Notes / Packing & Sights
+                <label className="block text-xs font-bold uppercase tracking-wider text-navy-800 mb-1">
+                  Custom Travel Notes & Itinerary Plan
                 </label>
                 <textarea
-                  rows="2"
+                  rows="3"
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  placeholder="e.g. Remember comfortable walking shoes, visit early morning for photography..."
-                  className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-white border border-ivory-200 text-navy-900 focus:outline-none focus:ring-1 focus:ring-gold-500 resize-none"
+                  placeholder="e.g., Must photograph sunrise at main monument, visit evening food market, book skip-the-line tickets..."
+                  className="w-full px-3 py-2 rounded-xl bg-white border border-ivory-200 text-navy-900 text-sm focus:outline-none focus:ring-2 focus:ring-gold-500"
                 />
               </div>
 
-              <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
-                <button
-                  type="submit"
-                  className="px-6 py-3 rounded-full text-xs font-semibold uppercase tracking-wider bg-navy-900 hover:bg-navy-800 text-gold-400 hover:text-gold-300 shadow-luxury transition flex items-center gap-2"
-                >
-                  {isSaved ? <BookmarkCheck className="w-4 h-4 text-gold-400" /> : <Bookmark className="w-4 h-4" />}
-                  <span>{isSaved ? 'Update Trip Details' : 'Add to My Trip Itinerary'}</span>
-                </button>
-
+              <div className="flex flex-wrap items-center justify-end gap-3 pt-2">
                 {isSaved && (
                   <button
                     type="button"
                     onClick={() => {
                       onRemoveFromTrip(destination.id);
-                      setFeedbackMsg('Removed from itinerary');
-                      setTimeout(onClose, 800);
+                      onClose();
                     }}
-                    className="px-4 py-2.5 rounded-full text-xs font-semibold text-rose-600 hover:bg-rose-50 border border-rose-200 transition flex items-center gap-1.5"
+                    className="px-4 py-2.5 rounded-xl border border-rose-300 text-rose-700 hover:bg-rose-50 text-xs font-semibold transition flex items-center gap-1.5"
                   >
                     <Trash2 className="w-4 h-4" />
                     <span>Remove from Trip</span>
                   </button>
                 )}
+
+                <button
+                  type="submit"
+                  className="px-6 py-2.5 rounded-xl bg-navy-950 text-gold-400 hover:bg-navy-900 text-xs font-bold uppercase tracking-wider transition shadow-luxury flex items-center gap-2"
+                >
+                  {isSaved ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
+                  <span>{isSaved ? 'Update Itinerary' : 'Save to My Trip'}</span>
+                </button>
               </div>
             </form>
           </div>
